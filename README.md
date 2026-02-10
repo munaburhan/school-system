@@ -14,12 +14,14 @@ A comprehensive full-stack school management system with role-based access contr
 - **Exams & Results**: Manage exams and enter results
 - **Analytics**: Comprehensive dashboard with insights
 - **Multi-Portal**: Separate portals for Admin, Teachers, and Students
+- **Excel Import**: Bulk import for students and staff from Excel/CSV files.
+- **Bilingual Interface**: Full support for English and Arabic (RTL) with language toggle.
 
 ## Tech Stack
 
 - **Frontend**: React with Vite
 - **Backend**: Node.js with Express
-- **Database**: PostgreSQL
+- **Database**: PostgreSQL with robust schema and relationships.
 - **Authentication**: JWT with bcrypt
 
 ## Getting Started

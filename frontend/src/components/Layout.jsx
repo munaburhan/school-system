@@ -32,14 +32,14 @@ const Layout = ({ children }) => {
         { path: '/students', label: t('students'), icon: '👨‍🎓' },
         { path: '/staff', label: t('staff'), icon: '👨‍🏫' },
         { path: '/attendance', label: t('attendance'), icon: '📅' },
-        { path: '/timetable', label: t('timetable'), icon: 'clock' },
-        { path: '/behavior', label: t('behavior'), icon: 'behavior' },
+        { path: '/timetable', label: t('timetable'), icon: '🕒' },
+        { path: '/behavior', label: t('behavior'), icon: '⭐' },
         { path: '/exams', label: t('exams'), icon: '📝' },
     ];
 
     const adminItems = [
-        { path: '/teacher-assignments', label: t('teacher_assignments'), icon: 'assignment' },
-        { path: '/permissions', label: t('permissions'), icon: 'lock' },
+        { path: '/teacher-assignments', label: t('teacher_assignments'), icon: '📋' },
+        { path: '/permissions', label: t('permissions'), icon: '🔒' },
         { path: '/data-entry', label: t('data_entry'), icon: '📥' },
     ];
 
