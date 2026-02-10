@@ -1,52 +1,106 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { useTranslation } from 'react-i18next';
+import { useEffect } from 'react';
 import './Layout.css';
 
 const Layout = ({ children }) => {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
+    const { t, i18n } = useTranslation();
 
     const handleLogout = () => {
         logout();
         navigate('/login');
     };
 
+    const changeLanguage = (lng) => {
+        i18n.changeLanguage(lng);
+        document.documentElement.dir = lng === 'ar' ? 'rtl' : 'ltr';
+        document.documentElement.lang = lng;
+    };
+
+    // Set initial direction based on current language
+    useEffect(() => {
+        document.documentElement.dir = i18n.language === 'ar' ? 'rtl' : 'ltr';
+        document.documentElement.lang = i18n.language;
+    }, [i18n.language]);
+
+    const menuItems = [
+        { path: '/dashboard', label: t('dashboard'), icon: '📊' },
+        { path: '/students', label: t('students'), icon: '👨‍🎓' },
+        { path: '/staff', label: t('staff'), icon: '👨‍🏫' },
+        { path: '/attendance', label: t('attendance'), icon: '📅' },
+        { path: '/timetable', label: t('timetable'), icon: 'clock' },
+        { path: '/behavior', label: t('behavior'), icon: 'behavior' },
+        { path: '/exams', label: t('exams'), icon: '📝' },
+    ];
+
+    const adminItems = [
+        { path: '/teacher-assignments', label: t('teacher_assignments'), icon: 'assignment' },
+        { path: '/permissions', label: t('permissions'), icon: 'lock' },
+        { path: '/data-entry', label: t('data_entry'), icon: '📥' },
+    ];
+
     return (
         <div className="layout">
-            <nav className="navbar">
-                <div className="navbar-brand">
-                    <h1>School Management System</h1>
+            <aside className="sidebar">
+                <div className="sidebar-header">
+                    <h2>{t('school_system')}</h2>
                 </div>
-                <div className="navbar-user">
-                    <span>Welcome, {user?.username} ({user?.role})</span>
-                    <button onClick={handleLogout} className="btn btn-danger">Logout</button>
-                </div>
-            </nav>
 
-            <div className="layout-content">
-                <aside className="sidebar">
-                    <ul className="sidebar-menu">
-                        <li><Link to="/dashboard">Dashboard</Link></li>
-                        <li><Link to="/students">Students</Link></li>
-                        <li><Link to="/staff">Staff</Link></li>
-                        <li><Link to="/attendance">Attendance</Link></li>
-                        <li><Link to="/timetable">Timetable</Link></li>
-                        <li><Link to="/behavior">Behavior</Link></li>
-                        <li><Link to="/exams">Exams</Link></li>
-                        {user?.role === 'admin' && (
-                            <>
-                                <li><Link to="/teacher-assignments">Teacher Assignments</Link></li>
-                                <li><Link to="/permissions">Permissions</Link></li>
-                                <li><Link to="/data-entry">Data Entry</Link></li>
-                            </>
-                        )}
-                    </ul>
-                </aside>
+                <nav className="sidebar-nav">
+                    {menuItems.map((item) => (
+                        <Link
+                            key={item.path}
+                            to={item.path}
+                            className={`nav-item ${location.pathname === item.path ? 'active' : ''}`}
+                        >
+                            <span className="icon">{item.icon}</span>
+                            <span className="label">{item.label}</span>
+                        </Link>
+                    ))}
 
-                <main className="main-content">
+                    {user?.role === 'admin' && adminItems.map((item) => (
+                        <Link
+                            key={item.path}
+                            to={item.path}
+                            className={`nav-item ${location.pathname === item.path ? 'active' : ''}`}
+                        >
+                            <span className="icon">{item.icon}</span>
+                            <span className="label">{item.label}</span>
+                        </Link>
+                    ))}
+                </nav>
+            </aside>
+
+            <main className="main-content">
+                <header className="top-bar">
+                    <div className="language-switcher">
+                        <button
+                            className={`lang-btn ${i18n.language === 'en' ? 'active' : ''}`}
+                            onClick={() => changeLanguage('en')}
+                        >
+                            🇺🇸 English
+                        </button>
+                        <button
+                            className={`lang-btn ${i18n.language === 'ar' ? 'active' : ''}`}
+                            onClick={() => changeLanguage('ar')}
+                        >
+                            🇸🇦 العربية
+                        </button>
+                    </div>
+                    <div className="user-menu">
+                        <span>{t('welcome')}, {user?.username} ({user?.role})</span>
+                        <button onClick={handleLogout} className="btn-logout">{t('logout')}</button>
+                    </div>
+                </header>
+
+                <div className="content-area">
                     {children}
-                </main>
-            </div>
+                </div>
+            </main>
         </div>
     );
 };

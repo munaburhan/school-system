@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import api from '../services/api';
+import { useTranslation } from 'react-i18next';
 import './DataEntry.css';
 
 const DataEntry = () => {
+    const { t } = useTranslation();
     const [selectedFile, setSelectedFile] = useState(null);
     const [importType, setImportType] = useState('students');
     const [uploading, setUploading] = useState(false);
@@ -13,41 +15,7 @@ const DataEntry = () => {
         setResults(null);
     };
 
-    const handleImport = async () => {
-        if (!selectedFile) {
-            alert('Please select a file first');
-            return;
-        }
-
-        setUploading(true);
-        setResults(null);
-
-        try {
-            const formData = new FormData();
-            formData.append('file', selectedFile);
-
-            const response = await api.post(`/import/${importType}`, formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-            });
-
-            setResults(response.data.results);
-            setSelectedFile(null);
-
-            // Reset file input
-            document.getElementById('fileInput').value = '';
-
-            alert(`Import completed!\nSuccessful: ${response.data.results.successful}\nFailed: ${response.data.results.failed}`);
-        } catch (error) {
-            console.error('Import error:', error);
-            alert(error.response?.data?.error || 'Failed to import file');
-        } finally {
-            setUploading(false);
-        }
-    };
-
-    const downloadTemplate = async () => {
+    const handleDownloadTemplate = async () => {
         try {
             const response = await api.get(`/import/template/${importType}`, {
                 responseType: 'blob'
@@ -59,167 +27,178 @@ const DataEntry = () => {
             link.setAttribute('download', `${importType}_template.xlsx`);
             document.body.appendChild(link);
             link.click();
-            link.remove();
+            link.parentNode.removeChild(link);
         } catch (error) {
-            console.error('Download error:', error);
+            console.error('Error downloading template:', error);
             alert('Failed to download template');
         }
     };
 
+    const handleUpload = async () => {
+        if (!selectedFile) return;
+
+        const formData = new FormData();
+        formData.append('file', selectedFile);
+
+        setUploading(true);
+        setResults(null);
+
+        try {
+            const response = await api.post(`/import/${importType}`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            setResults(response.data.results);
+        } catch (error) {
+            console.error('Error uploading file:', error);
+            alert(error.response?.data?.error || 'Failed to import data');
+        } finally {
+            setUploading(false);
+        }
+    };
+
+    const studentColumns = [
+        'student_id (Required)', 'english_name (Required)', 'arabic_name',
+        'current_grade', 'date_of_birth (YYYY-MM-DD)', 'status'
+    ];
+
+    const staffColumns = [
+        'username (Required)', 'password', 'email', 'english_name (Required)',
+        'arabic_name', 'role', 'department'
+    ];
+
     return (
         <div className="data-entry-page">
-            <h1>Data Import</h1>
-            <p>Import students or staff from Excel/CSV files</p>
+            <h1>{t('data_entry')}</h1>
 
-            <div className="card import-card">
-                <h2>Import Data</h2>
-
-                <div className="form-group">
-                    <label>Import Type</label>
-                    <select value={importType} onChange={(e) => setImportType(e.target.value)}>
-                        <option value="students">Students</option>
-                        <option value="staff">Staff</option>
-                    </select>
+            <div className="import-section card">
+                <div className="import-type-selector">
+                    <h2>{t('select_import_type')}</h2>
+                    <div className="radio-group">
+                        <label className={`radio-card ${importType === 'students' ? 'active' : ''}`}>
+                            <input
+                                type="radio"
+                                value="students"
+                                checked={importType === 'students'}
+                                onChange={(e) => setImportType(e.target.value)}
+                            />
+                            <span className="icon">👨‍🎓</span>
+                            <span>{t('students_import')}</span>
+                        </label>
+                        <label className={`radio-card ${importType === 'staff' ? 'active' : ''}`}>
+                            <input
+                                type="radio"
+                                value="staff"
+                                checked={importType === 'staff'}
+                                onChange={(e) => setImportType(e.target.value)}
+                            />
+                            <span className="icon">👨‍🏫</span>
+                            <span>{t('staff_import')}</span>
+                        </label>
+                    </div>
                 </div>
 
-                <div className="form-group">
-                    <label>Select File (Excel or CSV)</label>
-                    <input
-                        id="fileInput"
-                        type="file"
-                        accept=".xlsx,.xls,.csv"
-                        onChange={handleFileChange}
-                    />
-                    {selectedFile && (
-                        <p className="file-info">Selected: {selectedFile.name}</p>
-                    )}
+                <div className="action-buttons">
+                    <button onClick={handleDownloadTemplate} className="btn btn-secondary">
+                        📥 {t('download_template')}
+                    </button>
                 </div>
 
-                <div className="button-group">
+                <div className="upload-area">
+                    <h3>{t('upload_file')}</h3>
+                    <div className="file-drop-zone">
+                        <input
+                            type="file"
+                            accept=".xlsx, .xls, .csv"
+                            onChange={handleFileChange}
+                            id="file-upload"
+                        />
+                        <label htmlFor="file-upload">
+                            {selectedFile ? (
+                                <span className="file-name">📄 {selectedFile.name}</span>
+                            ) : (
+                                <span>{t('drag_drop')}</span>
+                            )}
+                            <br />
+                            <small>{t('supported_formats')}</small>
+                        </label>
+                    </div>
+
                     <button
+                        onClick={handleUpload}
                         className="btn btn-primary"
-                        onClick={handleImport}
                         disabled={!selectedFile || uploading}
                     >
-                        {uploading ? 'Importing...' : 'Import Data'}
-                    </button>
-
-                    <button
-                        className="btn btn-success"
-                        onClick={downloadTemplate}
-                    >
-                        📥 Download Template
+                        {uploading ? t('uploading') : t('import_data')}
                     </button>
                 </div>
             </div>
 
             {results && (
-                <div className="card results-card">
-                    <h2>Import Results</h2>
-
-                    <div className="results-summary">
-                        <div className="result-stat">
-                            <span className="stat-label">Total Records:</span>
-                            <span className="stat-value">{results.total}</span>
+                <div className="results-section card">
+                    <h2>{t('import_results')}</h2>
+                    <div className="stats-row">
+                        <div className="stat-box total">
+                            <span className="label">{t('total_records')}</span>
+                            <span className="value">{results.total}</span>
                         </div>
-                        <div className="result-stat success">
-                            <span className="stat-label">Successful:</span>
-                            <span className="stat-value">{results.successful}</span>
+                        <div className="stat-box success">
+                            <span className="label">{t('successful')}</span>
+                            <span className="value">{results.successful}</span>
                         </div>
-                        <div className="result-stat failed">
-                            <span className="stat-label">Failed:</span>
-                            <span className="stat-value">{results.failed}</span>
+                        <div className="stat-box failed">
+                            <span className="label">{t('failed')}</span>
+                            <span className="value">{results.failed}</span>
                         </div>
                     </div>
 
-                    {results.errors && results.errors.length > 0 && (
-                        <div className="errors-section">
-                            <h3>Errors</h3>
-                            <div className="errors-list">
-                                {results.errors.map((error, index) => (
-                                    <div key={index} className="error-item">
-                                        <strong>Row {error.row}:</strong> {error.error}
-                                    </div>
-                                ))}
-                            </div>
+                    {results.errors.length > 0 && (
+                        <div className="error-details">
+                            <h3>{t('error_details')}</h3>
+                            <table className="error-table">
+                                <thead>
+                                    <tr>
+                                        <th>{t('row')}</th>
+                                        <th>{t('error')}</th>
+                                        <th>{t('data')}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {results.errors.map((err, index) => (
+                                        <tr key={index}>
+                                            <td>{err.row}</td>
+                                            <td className="error-msg">{err.error}</td>
+                                            <td className="error-data">
+                                                <pre>{JSON.stringify(err.data, null, 2)}</pre>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
                         </div>
                     )}
                 </div>
             )}
 
-            <div className="card instructions-card">
-                <h2>📋 Instructions</h2>
-
-                <h3>How to Import Data:</h3>
+            <div className="instructions-section card">
+                <h2>{t('instructions')}</h2>
                 <ol>
-                    <li>Click <strong>"Download Template"</strong> to get the Excel template</li>
-                    <li>Open the template and fill in your data</li>
-                    <li>Save the file</li>
-                    <li>Select the import type (Students or Staff)</li>
-                    <li>Click <strong>"Choose File"</strong> and select your Excel file</li>
-                    <li>Click <strong>"Import Data"</strong></li>
+                    <li>{t('instruction_1')}</li>
+                    <li>{t('instruction_2')}</li>
+                    <li>{t('instruction_3')}</li>
+                    <li>{t('instruction_4')}</li>
                 </ol>
 
-                <h3>📊 Students Template Format:</h3>
-                <table className="template-table">
-                    <thead>
-                        <tr>
-                            <th>student_id</th>
-                            <th>english_name</th>
-                            <th>arabic_name</th>
-                            <th>current_grade</th>
-                            <th>date_of_birth</th>
-                            <th>status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>S001</td>
-                            <td>John Smith</td>
-                            <td>جون سميث</td>
-                            <td>Grade 10</td>
-                            <td>2008-05-15</td>
-                            <td>active</td>
-                        </tr>
-                    </tbody>
-                </table>
-
-                <h3>👨‍🏫 Staff Template Format:</h3>
-                <table className="template-table">
-                    <thead>
-                        <tr>
-                            <th>username</th>
-                            <th>password</th>
-                            <th>email</th>
-                            <th>english_name</th>
-                            <th>arabic_name</th>
-                            <th>role</th>
-                            <th>department</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>teacher1</td>
-                            <td>default123</td>
-                            <td>teacher@school.com</td>
-                            <td>Ahmed Ali</td>
-                            <td>أحمد علي</td>
-                            <td>teacher</td>
-                            <td>Math</td>
-                        </tr>
-                    </tbody>
-                </table>
-
-                <div className="notes">
-                    <h4>📝 Important Notes:</h4>
-                    <ul>
-                        <li><strong>Required fields</strong> are marked with * in the template</li>
-                        <li>If a student/staff with the same ID/username exists, it will be <strong>updated</strong></li>
-                        <li>Date format should be: YYYY-MM-DD (e.g., 2008-05-15)</li>
-                        <li>Status can be: active or inactive</li>
-                        <li>Staff roles: teacher, leader, vice_principal, principal</li>
-                        <li>The system will show you which rows failed and why</li>
-                    </ul>
+                <div className="columns-info">
+                    <h3>{t('template_columns')}:</h3>
+                    <div className="tags">
+                        {importType === 'students' ? (
+                            studentColumns.map(col => <span key={col} className="tag">{col}</span>)
+                        ) : (
+                            staffColumns.map(col => <span key={col} className="tag">{col}</span>)
+                        )}
+                    </div>
                 </div>
             </div>
         </div>
