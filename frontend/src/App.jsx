@@ -5,6 +5,7 @@ import Layout from './components/Layout';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Students from './pages/Students';
+import DataEntry from './pages/DataEntry';
 import './index.css';
 
 function App() {
@@ -110,10 +111,7 @@ function App() {
           <Route path="/data-entry" element={
             <ProtectedRoute allowedRoles={['admin']}>
               <Layout>
-                <div className="card">
-                  <h1>Data Entry</h1>
-                  <p>Data entry page coming soon...</p>
-                </div>
+                <DataEntry />
               </Layout>
             </ProtectedRoute>
           } />
