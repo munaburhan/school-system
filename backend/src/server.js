@@ -39,6 +39,11 @@ app.use('/api/staff', staffRoutes);
 app.use('/api/attendance', attendanceRoutes);
 app.use('/api/import', importRoutes);
 
+// 404 handler for API routes
+app.use('/api', (req, res) => {
+    res.status(404).json({ error: 'API Route not found' });
+});
+
 // Serve static assets in production
 if (process.env.NODE_ENV === 'production') {
     const frontendDistPath = path.resolve(__dirname, '../../frontend/dist');
@@ -51,17 +56,7 @@ if (process.env.NODE_ENV === 'production') {
     });
 }
 
-// Health check
-app.get('/health', (req, res) => {
-    res.json({ status: 'ok', message: 'School Management System API is running' });
-});
-
-// 404 handler
-app.use((req, res) => {
-    res.status(404).json({ error: 'Route not found' });
-});
-
-// Error handler
+// Global Error handler
 app.use((err, req, res, next) => {
     console.error('Error:', err);
     res.status(500).json({ error: 'Internal server error' });
