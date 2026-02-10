@@ -4,7 +4,7 @@
     "description": "Full-stack School Management System",
     "main": "backend/src/server.js",
     "scripts": {
-        "start": "cd backend && node src/server.js",
+        "start": "cd backend && npm run migrate && npm run seed && node src/server.js",
         "build": "cd frontend && npm install && npm run build && cd ../backend && npm install",
         "dev": "concurrently \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\""
     },
