@@ -95,10 +95,10 @@ export const getAttendanceStats = async (req, res) => {
 
         let query = `
       SELECT 
-        COUNT(*) FILTER (WHERE status = 'present') as present_count,
-        COUNT(*) FILTER (WHERE status = 'absent') as absent_count,
-        COUNT(*) FILTER (WHERE status = 'late') as late_count,
-        COUNT(*) FILTER (WHERE status = 'excused') as excused_count,
+        COUNT(*) FILTER (WHERE a.status = 'present') as present_count,
+        COUNT(*) FILTER (WHERE a.status = 'absent') as absent_count,
+        COUNT(*) FILTER (WHERE a.status = 'late') as late_count,
+        COUNT(*) FILTER (WHERE a.status = 'excused') as excused_count,
         COUNT(*) as total_records
       FROM attendance a
       JOIN students s ON a.student_id = s.id
