@@ -1,0 +1,69 @@
+.layout {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.navbar {
+    background: #2c3e50;
+    color: white;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand h1 {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.navbar-user {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.navbar-user span {
+    font-size: 14px;
+}
+
+.layout-content {
+    display: flex;
+    flex: 1;
+}
+
+.sidebar {
+    width: 250px;
+    background: #34495e;
+    color: white;
+    padding: 20px 0;
+}
+
+.sidebar-menu {
+    list-style: none;
+}
+
+.sidebar-menu li {
+    margin: 0;
+}
+
+.sidebar-menu a {
+    display: block;
+    padding: 12px 30px;
+    color: white;
+    text-decoration: none;
+    transition: background 0.2s;
+}
+
+.sidebar-menu a:hover {
+    background: #2c3e50;
+}
+
+.main-content {
+    flex: 1;
+    padding: 30px;
+    background: #f5f5f5;
+    overflow-y: auto;
+}
