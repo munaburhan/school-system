@@ -27,12 +27,12 @@ const Login = () => {
         setError('');
         setLoading(true);
 
-        try {
-            await login(formData.username, formData.password);
+        const result = await login(formData.username, formData.password);
+
+        if (result.success) {
             navigate('/dashboard');
-        } catch (err) {
-            setError(err.response?.data?.error || 'Failed to login');
-        } finally {
+        } else {
+            setError(result.error || 'Failed to login');
             setLoading(false);
         }
     };
