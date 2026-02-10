@@ -33,6 +33,17 @@ app.use('/api/staff', staffRoutes);
 app.use('/api/attendance', attendanceRoutes);
 app.use('/api/import', importRoutes);
 
+// Serve static assets in production
+if (process.env.NODE_ENV === 'production') {
+    // Set static folder
+    app.use(express.static(path.join(__dirname, '../../frontend/dist')));
+
+    // Any route not matching API routes should be served by React
+    app.get('*', (req, res) => {
+        res.sendFile(path.resolve(__dirname, '../../frontend', 'dist', 'index.html'));
+    });
+}
+
 // Health check
 app.get('/health', (req, res) => {
     res.json({ status: 'ok', message: 'School Management System API is running' });
