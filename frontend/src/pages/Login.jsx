@@ -96,7 +96,7 @@ const Login = () => {
                 </form>
 
                 <div className="login-footer">
-                    <p>Default Admin: admin / admin123</p>
+                    <p>{t('school_system')} © {new Date().getFullYear()}</p>
                 </div>
             </div>
         </div>

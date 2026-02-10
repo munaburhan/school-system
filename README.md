@@ -2,6 +2,35 @@
 
 A comprehensive full-stack school management system with role-based access control.
 
+## 🚀 How to Run
+
+1.  **Clone the repository**
+    ```bash
+    git clone https://github.com/munaburhan/school-system.git
+    cd school-system
+    ```
+
+2.  **Install Dependencies**
+    ```bash
+    # Install Backend
+    cd backend
+    npm install
+
+    # Install Frontend
+    cd ../frontend
+    npm install
+    ```
+
+3.  **Setup Database**
+    - Create a PostgreSQL database named `school_system`.
+    - Configure `.env` in `backend/.env` (copy from `.env.example`).
+    - Run migrations: `npm run migrate` (in backend folder).
+    - Seed data: `npm run seed` (in backend folder).
+
+4.  **Start the App**
+    - Backend: `npm run dev` (Port 5000)
+    - Frontend: `npm run dev` (Port 5173 / localhost)
+
 ## Features
 
 - **Admin Dashboard**: Complete control over all system modules
