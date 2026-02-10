@@ -41,12 +41,13 @@ app.use('/api/import', importRoutes);
 
 // Serve static assets in production
 if (process.env.NODE_ENV === 'production') {
+    const frontendDistPath = path.resolve(__dirname, '../../frontend/dist');
     // Set static folder
-    app.use(express.static(path.join(__dirname, '../../frontend/dist')));
+    app.use(express.static(frontendDistPath));
 
     // Any route not matching API routes should be served by React
     app.get('*', (req, res) => {
-        res.sendFile(path.resolve(__dirname, '../../frontend', 'dist', 'index.html'));
+        res.sendFile(path.join(frontendDistPath, 'index.html'));
     });
 }
 
