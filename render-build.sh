@@ -2,10 +2,17 @@
 # exit on error
 set -o errexit
 
+# 1. Install and Build Frontend
+echo "Building Frontend..."
+cd frontend
 npm install
-npm run build --prefix frontend
+npm run build
+cd ..
 
-# Clean up processed backend modules if needed
-rm -rf backend/node_modules
+# 2. Install Backend Dependencies
+echo "Installing Backend..."
 cd backend
 npm install
+cd ..
+
+echo "Build Done!"
