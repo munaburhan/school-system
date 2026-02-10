@@ -1,6 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import authRoutes from './routes/authRoutes.js';
 import studentRoutes from './routes/studentRoutes.js';
 import staffRoutes from './routes/staffRoutes.js';
@@ -8,6 +10,10 @@ import attendanceRoutes from './routes/attendanceRoutes.js';
 import importRoutes from './routes/importRoutes.js';
 
 dotenv.config();
+
+// Fix for __dirname in ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 5000;
