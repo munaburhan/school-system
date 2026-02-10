@@ -5,13 +5,23 @@ dotenv.config();
 
 const { Pool } = pg;
 
-const pool = new Pool({
-  host: process.env.DB_HOST,
-  port: process.env.DB_PORT,
-  database: process.env.DB_NAME,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-});
+const isProduction = process.env.NODE_ENV === 'production';
+
+const connectionConfig = {
+  connectionString: process.env.DATABASE_URL,
+  ssl: isProduction ? { rejectUnauthorized: false } : false
+};
+
+if (!process.env.DATABASE_URL) {
+  connectionConfig.host = process.env.DB_HOST;
+  connectionConfig.port = process.env.DB_PORT;
+  connectionConfig.database = process.env.DB_NAME;
+  connectionConfig.user = process.env.DB_USER;
+  connectionConfig.password = process.env.DB_PASSWORD;
+  delete connectionConfig.connectionString;
+}
+
+const pool = new Pool(connectionConfig);
 
 // Test connection
 pool.on('connect', () => {
