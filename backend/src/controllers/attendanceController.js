@@ -92,44 +92,53 @@ export const getAttendance = async (req, res) => {
 export const getAttendanceStats = async (req, res) => {
     try {
         const { start_date, end_date, grade } = req.query;
-
-        let query = `
-      SELECT 
-        COUNT(*) FILTER (WHERE status = 'present') as present_count,
-        COUNT(*) FILTER (WHERE status = 'absent') as absent_count,
-        COUNT(*) FILTER (WHERE status = 'late') as late_count,
-        COUNT(*) FILTER (WHERE status = 'excused') as excused_count,
-        COUNT(*) as total_records
-      FROM attendance a
-      JOIN students s ON a.student_id = s.id
-      WHERE 1=1
-    `;
         const params = [];
+        const conditions = ['1=1'];
         let paramCount = 0;
 
         if (start_date) {
             paramCount++;
-            query += ` AND a.date >= $${paramCount}`;
+            conditions.push(`a.date >= $${paramCount}`);
             params.push(start_date);
         }
 
         if (end_date) {
             paramCount++;
-            query += ` AND a.date <= $${paramCount}`;
+            conditions.push(`a.date <= $${paramCount}`);
             params.push(end_date);
         }
 
         if (grade) {
             paramCount++;
-            query += ` AND s.current_grade = $${paramCount}`;
+            conditions.push(`s.current_grade = $${paramCount}`);
             params.push(grade);
         }
 
+        const query = `
+            SELECT 
+                COUNT(CASE WHEN a.status = 'present' THEN 1 END) as present_count,
+                COUNT(CASE WHEN a.status = 'absent' THEN 1 END) as absent_count,
+                COUNT(CASE WHEN a.status = 'late' THEN 1 END) as late_count,
+                COUNT(CASE WHEN a.status = 'excused' THEN 1 END) as excused_count,
+                COUNT(*) as total_records
+            FROM attendance a
+            JOIN students s ON a.student_id = s.id
+            WHERE ${conditions.join(' AND ')}
+        `;
+
         const result = await pool.query(query, params);
 
-        res.json(result.rows[0]);
+        res.json(result.rows[0] || {
+            present_count: 0,
+            absent_count: 0,
+            late_count: 0,
+            excused_count: 0,
+            total_records: 0
+        });
     } catch (error) {
         console.error('Get attendance stats error:', error);
-        res.status(500).json({ error: 'Failed to fetch attendance statistics' });
+        // Keep detailed error logging enabled for now
+        console.error('Stack:', error.stack);
+        res.status(500).json({ error: 'Failed to fetch attendance statistics', details: error.message });
     }
 };

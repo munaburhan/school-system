@@ -105,6 +105,7 @@ export const createStudent = async (req, res) => {
             arabic_name,
             current_grade,
             date_of_birth,
+            status, // Add status
             contact_info,
             enrollment_date
         } = req.body;
@@ -114,10 +115,28 @@ export const createStudent = async (req, res) => {
         }
 
         const result = await pool.query(
-            `INSERT INTO students (student_id, english_name, arabic_name, current_grade, date_of_birth, contact_info, enrollment_date)
-       VALUES ($1, $2, $3, $4, $5, $6, $7)
-       RETURNING *`,
-            [student_id, english_name, arabic_name, current_grade, date_of_birth, contact_info, enrollment_date]
+            `INSERT INTO students (
+                student_id, 
+                english_name, 
+                arabic_name, 
+                current_grade, 
+                date_of_birth, 
+                status, 
+                contact_info, 
+                enrollment_date
+            )
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+            RETURNING *`,
+            [
+                student_id,
+                english_name,
+                arabic_name,
+                current_grade,
+                date_of_birth,
+                status || 'active', // Default to active if missing
+                contact_info,
+                enrollment_date
+            ]
         );
 
         res.status(201).json(result.rows[0]);

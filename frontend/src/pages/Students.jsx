@@ -44,7 +44,9 @@ const Students = () => {
             if (statusFilter) query += `&status=${statusFilter}`;
 
             const response = await api.get(query);
-            setStudents(response.data.data || []); // Ensure it's always an array
+            // Fix: Backend returns { students: [], pagination: {} }
+            // The previous code expected { data: [] } which was incorrect
+            setStudents(response.data.students || []);
             setPagination(response.data.pagination || { total: 0, page: 1, totalPages: 1 });
         } catch (error) {
             console.error('Error fetching students:', error);
@@ -75,6 +77,7 @@ const Students = () => {
                 await api.post('/students', formData);
             }
             setShowModal(false);
+            setPagination(prev => ({ ...prev, page: 1 })); // Reset to first page to see new student
             fetchStudents();
             resetForm();
         } catch (error) {
@@ -133,72 +136,10 @@ const Students = () => {
                         Manage student records and enrollments
                     </p>
                 </div>
-                <button className="btn btn-primary btn-add" onClick={() => setShowAddForm(!showAddForm)}>
-                    <span>+</span> {showAddForm ? t('cancel') : t('add_student')}
+                <button className="btn btn-primary btn-add" onClick={openAddModal}>
+                    <span>+</span> {t('add_student')}
                 </button>
             </div>
-
-            {showAddForm && (
-                <div className="card form-card">
-                    <h2>{t('add_new_student')}</h2>
-                    <form onSubmit={handleSubmit}>
-                        <div className="form-row">
-                            <div className="form-group">
-                                <label>{t('student_id')}</label>
-                                <input
-                                    type="text"
-                                    name="student_id"
-                                    value={formData.student_id}
-                                    onChange={handleInputChange}
-                                    required
-                                    className="search-input"
-                                />
-                            </div>
-                            <div className="form-group">
-                                <label>{t('english_name')}</label>
-                                <input
-                                    type="text"
-                                    name="english_name"
-                                    value={formData.english_name}
-                                    onChange={handleInputChange}
-                                    required
-                                    className="search-input"
-                                />
-                            </div>
-                        </div>
-                        <div className="form-row">
-                            <div className="form-group">
-                                <label>{t('arabic_name')}</label>
-                                <input
-                                    type="text"
-                                    name="arabic_name"
-                                    value={formData.arabic_name}
-                                    onChange={handleInputChange}
-                                    className="search-input"
-                                />
-                            </div>
-                            <div className="form-group">
-                                <label>{t('grade')}</label>
-                                <select
-                                    name="current_grade"
-                                    value={formData.current_grade}
-                                    onChange={handleInputChange}
-                                    required
-                                    className="search-input"
-                                >
-                                    <option value="">{t('select_grade')}</option>
-                                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(g => (
-                                        <option key={g} value={g}>{t('grade')} {g}</option>
-                                    ))}
-                                </select>
-                            </div>
-                        </div>
-                        <div className="form-actions">
-                            <button type="submit" className="btn btn-primary">{t('save')}</button>
-                        </div>
-                    </form>
-                </div>
-            )}
 
             <div className="filters-card">
                 <div className="filters">
@@ -382,10 +323,10 @@ const Students = () => {
                                         onChange={handleInputChange}
                                         required
                                     >
-                                        <option value="">Select Grade</option>
-                                        <option value="Grade 10">Grade 10</option>
-                                        <option value="Grade 11">Grade 11</option>
-                                        <option value="Grade 12">Grade 12</option>
+                                        <option value="">{t('select_grade')}</option>
+                                        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(g => (
+                                            <option key={g} value={g}>{t('grade')} {g}</option>
+                                        ))}
                                     </select>
                                 </div>
                                 <div className="form-group">

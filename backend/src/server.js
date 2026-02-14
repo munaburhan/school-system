@@ -97,8 +97,8 @@ app.use('/api/*', (req, res) => {
 
 // Error handler
 app.use((err, req, res, next) => {
-    console.error('❌ Error:', err);
-    res.status(500).json({ error: 'Internal server error', message: err.message });
+    console.error('❌ Error full stack:', err.stack);
+    res.status(500).json({ error: 'Internal server error', message: err.message, stack: process.env.NODE_ENV === 'development' ? err.stack : undefined });
 });
 
 // Start server
