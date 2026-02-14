@@ -52,23 +52,51 @@ app.use((req, res, next) => {
     next();
 });
 
-// Routes
+// Serve static assets in production FIRST (before CORS)
+if (process.env.NODE_ENV === 'production') {
+    const frontendDistPath = path.resolve(__dirname, '../../frontend/dist');
+    console.log('📁 Serving static files from:', frontendDistPath);
+    app.use(express.static(frontendDistPath));
+}
+
+// CORS Configuration - ONLY for API routes
+const allowedOrigins = [
+    process.env.FRONTEND_URL,
+    'http://localhost:5173',
+    'http://localhost:5000'
+].filter(Boolean);
+
+console.log('🌐 Allowed CORS Origins:', allowedOrigins);
+
+const corsOptions = {
+    origin: function (origin, callback) {
+        // Allow requests with no origin
+        if (!origin) return callback(null, true);
+
+        if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV !== 'production') {
+            callback(null, true);
+        } else {
+            console.warn('⚠️  CORS blocked origin:', origin);
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    credentials: true
+};
+
+// Apply CORS only to API routes
+app.use('/api', cors(corsOptions));
+
+// API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/students', studentRoutes);
 app.use('/api/staff', staffRoutes);
 app.use('/api/attendance', attendanceRoutes);
 app.use('/api/import', importRoutes);
 
-// Serve static assets in production
+// Serve React app for remaining routes in production
 if (process.env.NODE_ENV === 'production') {
-    const frontendDistPath = path.resolve(__dirname, '../../frontend/dist');
-    console.log('📁 Serving static files from:', frontendDistPath);
-
-    // Set static folder
-    app.use(express.static(frontendDistPath));
-
-    // Any route not matching API routes should be served by React
     app.get('*', (req, res) => {
+        const frontendDistPath = path.resolve(__dirname, '../../frontend/dist');
         console.log('📄 Serving index.html for:', req.path);
         res.sendFile(path.join(frontendDistPath, 'index.html'));
     });
