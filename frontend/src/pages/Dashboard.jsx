@@ -65,17 +65,47 @@ const Dashboard = () => {
     };
 
     const statCards = [
-        { title: t('total_students'), value: stats.totalStudents, subtext: `${stats.activeStudents} ${t('active')}`, icon: '👥', color: '#6c5ce7' },
-        { title: t('total_staff'), value: stats.totalStaff, subtext: '', icon: '👨‍🏫', color: '#00b894' },
-        { title: t('attendance_rate'), value: `${stats.attendanceRate}%`, subtext: 'Last 30 days', icon: '📊', color: '#0984e3' },
-        { title: t('system_status'), value: t('active'), subtext: 'All systems operational', icon: '✅', color: '#00cec9' }
+        {
+            title: t('total_students'),
+            value: stats.totalStudents,
+            subtext: `${stats.activeStudents} ${t('active')}`,
+            icon: '👥',
+            trend: 'increase',
+            bg: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+        },
+        {
+            title: t('total_staff'),
+            value: stats.totalStaff,
+            subtext: 'Across all departments',
+            icon: '👨‍🏫',
+            trend: 'neutral',
+            bg: 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)'
+        },
+        {
+            title: t('attendance_rate'),
+            value: `${stats.attendanceRate}%`,
+            subtext: 'Last 30 days',
+            icon: '📊',
+            trend: parseFloat(stats.attendanceRate) > 90 ? 'increase' : 'neutral',
+            bg: 'linear-gradient(135deg, #3a7bd5 0%, #3a6073 100%)'
+        },
+        {
+            title: t('system_status'),
+            value: t('active'),
+            subtext: 'All systems operational',
+            icon: '✅',
+            trend: 'increase',
+            bg: 'linear-gradient(135deg, #02aab0 0%, #00cdac 100%)'
+        }
     ];
 
     const quickActions = [
-        { title: t('manage_students'), path: '/students', color: '#0984e3' },
-        { title: t('manage_staff'), path: '/staff', color: '#0984e3' },
-        { title: t('mark_attendance'), path: '/attendance', color: '#0984e3' },
-        { title: t('manage_exams'), path: '/exams', color: '#0984e3' }
+        { title: t('manage_students'), path: '/students', icon: '👨‍🎓' },
+        { title: t('manage_staff'), path: '/staff', icon: '👨‍🏫' },
+        { title: t('mark_attendance'), path: '/attendance', icon: '📅' },
+        { title: t('manage_exams'), path: '/exams', icon: '📝' },
+        { title: t('timetable'), path: '/timetable', icon: '🕒' },
+        { title: t('behavior'), path: '/behavior', icon: '⭐' }
     ];
 
     if (loading) {
@@ -83,44 +113,63 @@ const Dashboard = () => {
     }
 
     return (
-        <div className="dashboard">
-            <h1>{t('dashboard')}</h1>
+        <div className="dashboard-container">
+            <header className="dashboard-header">
+                <div>
+                    <h1>{t('dashboard')}</h1>
+                    <p style={{ color: 'var(--text-secondary)', marginTop: '0.5rem' }}>
+                        Welcome back, Admin
+                    </p>
+                </div>
+                <div className="date-display">
+                    {new Date().toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                </div>
+            </header>
 
             <div className="stats-grid">
                 {statCards.map((stat, index) => (
                     <div key={index} className="stat-card">
-                        <div className="stat-icon" style={{ backgroundColor: `${stat.color}20`, color: stat.color }}>
+                        <div className="stat-icon-wrapper" style={{ background: stat.bg, color: 'white' }}>
                             {stat.icon}
                         </div>
                         <div className="stat-info">
-                            <h3>{stat.title}</h3>
+                            <div className="stat-title">{stat.title}</div>
                             <div className="stat-value">{stat.value}</div>
-                            <div className="stat-subtext">{stat.subtext}</div>
+                            <div className={`stat-subtext ${stat.trend}`}>
+                                {stat.subtext}
+                            </div>
                         </div>
                     </div>
                 ))}
             </div>
 
-            <div className="dashboard-content-grid">
-                <div className="card quick-actions">
-                    <h2>{t('quick_actions')}</h2>
-                    <div className="actions-grid">
+            <div className="dashboard-sections">
+                <div className="section-card quick-actions">
+                    <div className="section-header">
+                        <h2>{t('quick_actions')}</h2>
+                    </div>
+                    <div className="quick-actions-grid">
                         {quickActions.map((action, index) => (
                             <button
                                 key={index}
                                 className="action-btn"
                                 onClick={() => navigate(action.path)}
                             >
-                                {action.title}
+                                <span className="action-icon">{action.icon}</span>
+                                <span className="action-label">{action.title}</span>
                             </button>
                         ))}
                     </div>
                 </div>
 
-                <div className="card recent-activity">
-                    <h2>{t('recent_activity')}</h2>
+                <div className="section-card recent-activity">
+                    <div className="section-header">
+                        <h2>{t('recent_activity')}</h2>
+                    </div>
                     <div className="activity-list">
-                        <p className="no-activity">{t('no_activity')}</p>
+                        <p className="no-activity" style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-secondary)' }}>
+                            {t('no_activity')}
+                        </p>
                     </div>
                 </div>
             </div>

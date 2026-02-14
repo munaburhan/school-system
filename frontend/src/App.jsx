@@ -6,6 +6,7 @@ import Layout from './components/Layout';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Students from './pages/Students';
+import Staff from './pages/Staff';
 import DataEntry from './pages/DataEntry';
 import './index.css';
 
@@ -99,17 +100,6 @@ function App() {
               </ProtectedRoute>
             } />
 
-            <Route path="/permissions" element={
-              <ProtectedRoute allowedRoles={['admin']}>
-                <Layout>
-                  <div className="card">
-                    <h1>Permissions Management</h1>
-                    <p>Permissions page coming soon...</p>
-                  </div>
-                </Layout>
-              </ProtectedRoute>
-            } />
-
             <Route path="/data-entry" element={
               <ProtectedRoute allowedRoles={['admin']}>
                 <Layout>
@@ -122,7 +112,7 @@ function App() {
           </Routes>
         </Router>
       </AuthProvider>
-    </ErrorBoundary>
+    </ErrorBoundary >
   );
 }
 

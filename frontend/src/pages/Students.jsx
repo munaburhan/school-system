@@ -127,128 +127,211 @@ const Students = () => {
     return (
         <div className="students-page">
             <div className="page-header">
-                <h1>{t('students')}</h1>
-                <button className="btn btn-primary" onClick={openAddModal}>
-                    + {t('add_student')}
+                <div>
+                    <h1>{t('students')}</h1>
+                    <p style={{ color: 'var(--text-secondary)', marginTop: '0.5rem' }}>
+                        Manage student records and enrollments
+                    </p>
+                </div>
+                <button className="btn btn-primary btn-add" onClick={() => setShowAddForm(!showAddForm)}>
+                    <span>+</span> {showAddForm ? t('cancel') : t('add_student')}
                 </button>
             </div>
 
-            <div className="filters-section">
-                <form onSubmit={handleSearch} className="search-form">
+            {showAddForm && (
+                <div className="card form-card">
+                    <h2>{t('add_new_student')}</h2>
+                    <form onSubmit={handleSubmit}>
+                        <div className="form-row">
+                            <div className="form-group">
+                                <label>{t('student_id')}</label>
+                                <input
+                                    type="text"
+                                    name="student_id"
+                                    value={formData.student_id}
+                                    onChange={handleInputChange}
+                                    required
+                                    className="search-input"
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label>{t('english_name')}</label>
+                                <input
+                                    type="text"
+                                    name="english_name"
+                                    value={formData.english_name}
+                                    onChange={handleInputChange}
+                                    required
+                                    className="search-input"
+                                />
+                            </div>
+                        </div>
+                        <div className="form-row">
+                            <div className="form-group">
+                                <label>{t('arabic_name')}</label>
+                                <input
+                                    type="text"
+                                    name="arabic_name"
+                                    value={formData.arabic_name}
+                                    onChange={handleInputChange}
+                                    className="search-input"
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label>{t('grade')}</label>
+                                <select
+                                    name="current_grade"
+                                    value={formData.current_grade}
+                                    onChange={handleInputChange}
+                                    required
+                                    className="search-input"
+                                >
+                                    <option value="">{t('select_grade')}</option>
+                                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(g => (
+                                        <option key={g} value={g}>{t('grade')} {g}</option>
+                                    ))}
+                                </select>
+                            </div>
+                        </div>
+                        <div className="form-actions">
+                            <button type="submit" className="btn btn-primary">{t('save')}</button>
+                        </div>
+                    </form>
+                </div>
+            )}
+
+            <div className="filters-card">
+                <div className="filters">
                     <input
                         type="text"
-                        placeholder={t('search_students')}
+                        placeholder={t('search_placeholder')}
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                         className="search-input"
                     />
-                    <button type="submit" className="btn btn-secondary">🔍</button>
-                </form>
-
-                <div className="filters">
                     <select
                         value={gradeFilter}
                         onChange={(e) => setGradeFilter(e.target.value)}
                         className="filter-select"
                     >
                         <option value="">{t('all_grades')}</option>
-                        <option value="Grade 10">{t('grade_10')}</option>
-                        <option value="Grade 11">{t('grade_11')}</option>
-                        <option value="Grade 12">{t('grade_12')}</option>
+                        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(g => (
+                            <option key={g} value={g}>{t('grade')} {g}</option>
+                        ))}
                     </select>
-
                     <select
                         value={statusFilter}
                         onChange={(e) => setStatusFilter(e.target.value)}
                         className="filter-select"
                     >
-                        <option value="">All Status</option>
+                        <option value="">{t('all_statuses')}</option>
                         <option value="active">{t('active')}</option>
                         <option value="inactive">{t('inactive')}</option>
-                        <option value="graduated">Graduated</option>
-                        <option value="suspended">Suspended</option>
                     </select>
                 </div>
             </div>
 
-            {loading ? (
-                <div className="loading">{t('loading')}</div>
-            ) : (
-                <>
-                    <div className="table-container">
-                        <table className="data-table">
-                            <thead>
-                                <tr>
-                                    <th>{t('student_id')}</th>
-                                    <th>{t('english_name')}</th>
-                                    <th>{t('arabic_name')}</th>
-                                    <th>{t('grade')}</th>
-                                    <th>{t('dob')}</th>
-                                    <th>{t('status')}</th>
-                                    <th>{t('actions')}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {students.map((student) => (
-                                    <tr key={student.id}>
-                                        <td>{student.student_id}</td>
-                                        <td>{student.english_name}</td>
-                                        <td>{student.arabic_name}</td>
-                                        <td>{student.current_grade}</td>
-                                        <td>{student.date_of_birth ? new Date(student.date_of_birth).toLocaleDateString() : '-'}</td>
-                                        <td>
-                                            <span className={`status-badge ${student.status}`}>
-                                                {student.status === 'active' ? t('active') : t('inactive')}
-                                            </span>
-                                        </td>
-                                        <td className="actions-cell">
-                                            <button
-                                                className="btn-icon edit"
-                                                onClick={() => openEditModal(student)}
-                                                title={t('edit_student')}
-                                            >
+            <div className="table-container">
+                <table className="data-table">
+                    <thead>
+                        <tr>
+                            <th>{t('student_id')}</th>
+                            <th>{t('name')}</th>
+                            <th>{t('grade')}</th>
+                            <th>{t('status')}</th>
+                            <th>{t('actions')}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {loading ? (
+                            <tr className="loading-row">
+                                <td colSpan="5">{t('loading')}</td>
+                            </tr>
+                        ) : students.length === 0 ? (
+                            <tr>
+                                <td colSpan="5" className="no-data">{t('no_students_found')}</td>
+                            </tr>
+                        ) : (
+                            students.map((student) => (
+                                <tr key={student.id}>
+                                    <td>{student.student_id}</td>
+                                    <td>
+                                        <div style={{ fontWeight: '500' }}>{student.english_name}</div>
+                                        <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>{student.arabic_name}</div>
+                                    </td>
+                                    <td>
+                                        <span style={{
+                                            background: '#f1f5f9',
+                                            padding: '2px 8px',
+                                            borderRadius: '4px',
+                                            fontSize: '0.85rem',
+                                            fontWeight: '500'
+                                        }}>
+                                            {t('grade')} {student.current_grade}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span className={`status-badge ${student.status}`}>
+                                            {t(student.status)}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div className="table-actions">
+                                            <button className="btn-icon" title={t('edit')}>
                                                 ✏️
                                             </button>
                                             <button
                                                 className="btn-icon delete"
-                                                onClick={() => handleDelete(student.id)}
-                                                title={t('delete_student')}
+                                                title={t('delete')}
+                                                onClick={() => {
+                                                    if (window.confirm(t('confirm_delete'))) {
+                                                        // Handle delete
+                                                    }
+                                                }}
                                             >
                                                 🗑️
                                             </button>
-                                        </td>
-                                    </tr>
-                                ))}
-                                {students.length === 0 && (
-                                    <tr>
-                                        <td colSpan="7" className="no-data">No students found</td>
-                                    </tr>
-                                )}
-                            </tbody>
-                        </table>
-                    </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))
+                        )}
+                    </tbody>
+                </table>
 
+                {pagination.totalPages > 1 && (
                     <div className="pagination">
-                        <button
-                            disabled={pagination.page === 1}
-                            onClick={() => setPagination(prev => ({ ...prev, page: prev.page - 1 }))}
-                            className="btn btn-secondary"
-                        >
-                            {t('previous')}
-                        </button>
-                        <span className="page-info">
-                            {t('page')} {pagination.page} {t('of')} {pagination.totalPages}
-                        </span>
-                        <button
-                            disabled={pagination.page === pagination.totalPages}
-                            onClick={() => setPagination(prev => ({ ...prev, page: prev.page + 1 }))}
-                            className="btn btn-secondary"
-                        >
-                            {t('next')}
-                        </button>
+                        <div className="pagination-info">
+                            Showing page {pagination.page} of {pagination.totalPages}
+                        </div>
+                        <div className="pagination-controls">
+                            <button
+                                className="pagination-btn"
+                                disabled={pagination.page === 1}
+                                onClick={() => setPagination(prev => ({ ...prev, page: prev.page - 1 }))}
+                            >
+                                ← {t('previous')}
+                            </button>
+                            {[...Array(pagination.totalPages)].map((_, i) => (
+                                <button
+                                    key={i + 1}
+                                    className={`pagination-btn ${pagination.page === i + 1 ? 'active' : ''}`}
+                                    onClick={() => setPagination(prev => ({ ...prev, page: i + 1 }))}
+                                >
+                                    {i + 1}
+                                </button>
+                            ))}
+                            <button
+                                className="pagination-btn"
+                                disabled={pagination.page === pagination.totalPages}
+                                onClick={() => setPagination(prev => ({ ...prev, page: prev.page + 1 }))}
+                            >
+                                {t('next')} →
+                            </button>
+                        </div>
                     </div>
-                </>
-            )}
+                )}
+            </div>
 
             {showModal && (
                 <div className="modal-overlay">
