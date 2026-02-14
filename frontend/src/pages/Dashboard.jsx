@@ -45,13 +45,20 @@ const Dashboard = () => {
             }
 
             setStats({
-                totalStudents: studentsRes.data.pagination.total,
-                activeStudents: activeStudentsRes.data.pagination.total,
-                totalStaff: staffRes.data.pagination.total,
+                totalStudents: studentsRes.data?.pagination?.total || 0,
+                activeStudents: activeStudentsRes.data?.pagination?.total || 0,
+                totalStaff: staffRes.data?.pagination?.total || 0,
                 attendanceRate
             });
         } catch (error) {
             console.error('Error fetching stats:', error);
+            // Keep default stats on error
+            setStats({
+                totalStudents: 0,
+                activeStudents: 0,
+                totalStaff: 0,
+                attendanceRate: 0
+            });
         } finally {
             setLoading(false);
         }

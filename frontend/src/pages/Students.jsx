@@ -44,10 +44,12 @@ const Students = () => {
             if (statusFilter) query += `&status=${statusFilter}`;
 
             const response = await api.get(query);
-            setStudents(response.data.data);
-            setPagination(response.data.pagination);
+            setStudents(response.data.data || []); // Ensure it's always an array
+            setPagination(response.data.pagination || { total: 0, page: 1, totalPages: 1 });
         } catch (error) {
             console.error('Error fetching students:', error);
+            setStudents([]); // Set empty array on error
+            setPagination({ total: 0, page: 1, totalPages: 1 });
         } finally {
             setLoading(false);
         }
