@@ -18,30 +18,7 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// CORS Configuration
-const allowedOrigins = [
-    process.env.FRONTEND_URL,
-    'http://localhost:5173',
-    'http://localhost:5000'
-].filter(Boolean); // Remove undefined values
-
-console.log('🌐 Allowed CORS Origins:', allowedOrigins);
 console.log('🔧 Environment:', process.env.NODE_ENV);
-
-app.use(cors({
-    origin: function (origin, callback) {
-        // Allow requests with no origin (like mobile apps or curl requests)
-        if (!origin) return callback(null, true);
-
-        if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV !== 'production') {
-            callback(null, true);
-        } else {
-            console.warn('⚠️  CORS blocked origin:', origin);
-            callback(new Error('Not allowed by CORS'));
-        }
-    },
-    credentials: true
-}));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -93,15 +70,6 @@ app.use('/api/staff', staffRoutes);
 app.use('/api/attendance', attendanceRoutes);
 app.use('/api/import', importRoutes);
 
-// Serve React app for remaining routes in production
-if (process.env.NODE_ENV === 'production') {
-    app.get('*', (req, res) => {
-        const frontendDistPath = path.resolve(__dirname, '../../frontend/dist');
-        console.log('📄 Serving index.html for:', req.path);
-        res.sendFile(path.join(frontendDistPath, 'index.html'));
-    });
-}
-
 // Health check
 app.get('/health', (req, res) => {
     res.json({
@@ -111,6 +79,15 @@ app.get('/health', (req, res) => {
         timestamp: new Date().toISOString()
     });
 });
+
+// Serve React app for remaining routes in production
+if (process.env.NODE_ENV === 'production') {
+    app.get('*', (req, res) => {
+        const frontendDistPath = path.resolve(__dirname, '../../frontend/dist');
+        console.log('📄 Serving index.html for:', req.path);
+        res.sendFile(path.join(frontendDistPath, 'index.html'));
+    });
+}
 
 // 404 handler for API routes only
 app.use('/api/*', (req, res) => {
