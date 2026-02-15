@@ -39,6 +39,8 @@ if (process.env.NODE_ENV === 'production') {
 // CORS Configuration - ONLY for API routes
 const allowedOrigins = [
     process.env.FRONTEND_URL,
+    process.env.RENDER_EXTERNAL_URL, // Auto-set by Render
+    'https://my-school-system-jq2z.onrender.com', // Specific URL from logs
     'http://localhost:5173',
     'http://localhost:5000'
 ].filter(Boolean);
