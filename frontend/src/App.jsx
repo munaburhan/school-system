@@ -7,6 +7,7 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Students from './pages/Students';
 import Staff from './pages/Staff';
+import TeacherAssignments from './pages/TeacherAssignments';
 import DataEntry from './pages/DataEntry';
 import './index.css';
 
@@ -37,10 +38,7 @@ function App() {
             <Route path="/staff" element={
               <ProtectedRoute>
                 <Layout>
-                  <div className="card">
-                    <h1>Staff Management</h1>
-                    <p>Staff management page coming soon...</p>
-                  </div>
+                  <Staff />
                 </Layout>
               </ProtectedRoute>
             } />
@@ -92,10 +90,7 @@ function App() {
             <Route path="/teacher-assignments" element={
               <ProtectedRoute allowedRoles={['admin']}>
                 <Layout>
-                  <div className="card">
-                    <h1>Teacher Assignments</h1>
-                    <p>Teacher assignments page coming soon...</p>
-                  </div>
+                  <TeacherAssignments />
                 </Layout>
               </ProtectedRoute>
             } />
@@ -112,7 +107,7 @@ function App() {
           </Routes>
         </Router>
       </AuthProvider>
-    </ErrorBoundary >
+    </ErrorBoundary>
   );
 }
 

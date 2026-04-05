@@ -20,7 +20,7 @@ const seedDefaultUsers = async () => {
         console.log('✓ Default admin user created (username: admin, password: admin123)');
 
         // Insert default permissions for all roles
-        const roles = ['admin', 'principal', 'vice_principal', 'leader', 'teacher', 'student'];
+        const roles = ['admin', 'principal', 'vice_principal', 'leader', 'teacher', 'student', 'hod', 'hos', 'it'];
         const modules = ['students', 'staff', 'attendance', 'timetable', 'behavior', 'exams', 'analytics', 'permissions'];
 
         for (const role of roles) {
@@ -60,6 +60,18 @@ const seedDefaultUsers = async () => {
                     if (['attendance', 'exams', 'timetable'].includes(module)) {
                         canRead = true;
                     }
+                }
+                // HOD and HOS have leader-like access
+                else if (role === 'hod' || role === 'hos') {
+                    canRead = true;
+                    if (['attendance', 'behavior', 'students'].includes(module)) {
+                        canWrite = true;
+                    }
+                }
+                // IT has admin-like access
+                else if (role === 'it') {
+                    canRead = true;
+                    canWrite = true;
                 }
 
                 await client.query(`
