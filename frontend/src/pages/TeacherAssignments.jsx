@@ -64,6 +64,12 @@ const TeacherAssignments = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        
+        if (!formData.teacher_id || !formData.subject || !formData.grade) {
+            alert("Please fill in Teacher, Subject, and Grade.");
+            return;
+        }
+        
         try {
             await api.post('/teacher-assignments', formData);
             setShowAddForm(false);
@@ -141,7 +147,6 @@ const TeacherAssignments = () => {
                                         name="teacher_id"
                                         value={formData.teacher_id}
                                         onChange={handleInputChange}
-                                        required
                                         className="filter-select"
                                         style={{ width: '100%' }}
                                     >
@@ -159,7 +164,6 @@ const TeacherAssignments = () => {
                                         name="subject"
                                         value={formData.subject}
                                         onChange={handleInputChange}
-                                        required
                                         className="filter-select"
                                         style={{ width: '100%' }}
                                     >
@@ -177,7 +181,6 @@ const TeacherAssignments = () => {
                                         name="grade"
                                         value={formData.grade}
                                         onChange={handleInputChange}
-                                        required
                                         className="filter-select"
                                         style={{ width: '100%' }}
                                     >

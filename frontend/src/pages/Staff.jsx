@@ -22,6 +22,7 @@ const Staff = () => {
     const [staff, setStaff] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showAddForm, setShowAddForm] = useState(false);
+    const [editingId, setEditingId] = useState(null);
     const [categoryFilter, setCategoryFilter] = useState('');
     const [search, setSearch] = useState('');
     const [formData, setFormData] = useState({
@@ -63,9 +64,20 @@ const Staff = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        
+        if (!formData.staff_id || !formData.english_name || !formData.staff_category) {
+            alert("Please fill in all required fields: Staff ID, English Name, and Staff Category.");
+            return;
+        }
+        
         try {
-            await api.post('/staff', formData);
+            if (editingId) {
+                await api.put(`/staff/${editingId}`, formData);
+            } else {
+                await api.post('/staff', formData);
+            }
             setShowAddForm(false);
+            setEditingId(null);
             setFormData({
                 staff_id: '',
                 english_name: '',
@@ -76,9 +88,37 @@ const Staff = () => {
             });
             fetchStaff();
         } catch (error) {
-            console.error('Error adding staff:', error);
-            alert(error.response?.data?.error || 'Failed to add staff member');
+            console.error('Error saving staff:', error);
+            alert(error.response?.data?.error || 'Failed to save staff member');
         }
+    };
+
+    const handleEdit = (member) => {
+        setFormData({
+            staff_id: member.staff_id || '',
+            english_name: member.english_name || '',
+            arabic_name: member.arabic_name || '',
+            staff_category: member.staff_category || 'Teacher',
+            joining_date: member.joining_date ? member.joining_date.split('T')[0] : '',
+            email: member.email || ''
+        });
+        setEditingId(member.id);
+        setShowAddForm(true);
+        // Scroll to top
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    const handleCancel = () => {
+        setShowAddForm(false);
+        setEditingId(null);
+        setFormData({
+            staff_id: '',
+            english_name: '',
+            arabic_name: '',
+            staff_category: 'Teacher',
+            joining_date: '',
+            email: ''
+        });
     };
 
     const handleDelete = async (id, name) => {
@@ -114,14 +154,16 @@ const Staff = () => {
                         Manage teachers and administrative staff
                     </p>
                 </div>
-                <button className="btn btn-primary btn-add" onClick={() => setShowAddForm(!showAddForm)}>
+                <button className="btn btn-primary btn-add" onClick={() => showAddForm ? handleCancel() : setShowAddForm(true)}>
                     <span>+</span> {showAddForm ? t('cancel') : t('add_new_staff')}
                 </button>
             </div>
 
             {showAddForm && (
                 <div className="card form-card" style={{ padding: '2rem', marginBottom: '1.5rem', background: 'white', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-card)', border: '1px solid var(--border-color)' }}>
-                    <h2 style={{ marginBottom: '1.5rem', color: 'var(--primary-color)', fontSize: '1.25rem' }}>{t('add_new_staff')}</h2>
+                    <h2 style={{ marginBottom: '1.5rem', color: 'var(--primary-color)', fontSize: '1.25rem' }}>
+                        {editingId ? 'Edit Staff Member' : t('add_new_staff')}
+                    </h2>
                     <form onSubmit={handleSubmit}>
                         <div className="form-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
                             <div className="form-group">
@@ -131,10 +173,10 @@ const Staff = () => {
                                     name="staff_id"
                                     value={formData.staff_id}
                                     onChange={handleInputChange}
-                                    required
                                     placeholder="e.g. T001"
                                     className="search-input"
                                     style={{ width: '100%' }}
+                                    disabled={!!editingId} // Add disabled when editing
                                 />
                             </div>
                             <div className="form-group">
@@ -143,7 +185,6 @@ const Staff = () => {
                                     name="staff_category"
                                     value={formData.staff_category}
                                     onChange={handleInputChange}
-                                    required
                                     className="filter-select"
                                     style={{ width: '100%' }}
                                 >
@@ -161,7 +202,6 @@ const Staff = () => {
                                     name="english_name"
                                     value={formData.english_name}
                                     onChange={handleInputChange}
-                                    required
                                     placeholder="Full name in English"
                                     className="search-input"
                                     style={{ width: '100%' }}
@@ -207,11 +247,11 @@ const Staff = () => {
                             </div>
                         </div>
                         <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
-                            <button type="button" className="btn btn-secondary" onClick={() => setShowAddForm(false)} style={{ padding: '0.65rem 1.25rem' }}>
+                            <button type="button" className="btn btn-secondary" onClick={handleCancel} style={{ padding: '0.65rem 1.25rem' }}>
                                 {t('cancel')}
                             </button>
                             <button type="submit" className="btn btn-primary" style={{ padding: '0.65rem 1.5rem' }}>
-                                {t('save')}
+                                {editingId ? 'Update' : t('save')}
                             </button>
                         </div>
                     </form>
@@ -310,6 +350,13 @@ const Staff = () => {
                                         </td>
                                         <td>
                                             <div className="table-actions">
+                                                <button
+                                                    className="btn-icon"
+                                                    title={t('edit')}
+                                                    onClick={() => handleEdit(member)}
+                                                >
+                                                    ✏️
+                                                </button>
                                                 <button
                                                     className="btn-icon delete"
                                                     title={t('delete')}

@@ -9,6 +9,7 @@ import Students from './pages/Students';
 import Staff from './pages/Staff';
 import TeacherAssignments from './pages/TeacherAssignments';
 import DataEntry from './pages/DataEntry';
+import Permissions from './pages/Permissions';
 import './index.css';
 
 function App() {
@@ -99,6 +100,14 @@ function App() {
               <ProtectedRoute allowedRoles={['admin']}>
                 <Layout>
                   <DataEntry />
+                </Layout>
+              </ProtectedRoute>
+            } />
+
+            <Route path="/permissions" element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <Layout>
+                  <Permissions />
                 </Layout>
               </ProtectedRoute>
             } />
