@@ -9,6 +9,8 @@ import staffRoutes from './routes/staffRoutes.js';
 import attendanceRoutes from './routes/attendanceRoutes.js';
 import importRoutes from './routes/importRoutes.js';
 import teacherAssignmentRoutes from './routes/teacherAssignmentRoutes.js';
+import timetableRoutes from './routes/timetableRoutes.js';
+import { initTimetableTable } from './controllers/timetableController.js';
 
 dotenv.config();
 
@@ -73,6 +75,7 @@ app.use('/api/staff', staffRoutes);
 app.use('/api/attendance', attendanceRoutes);
 app.use('/api/import', importRoutes);
 app.use('/api/teacher-assignments', teacherAssignmentRoutes);
+app.use('/api/timetable', timetableRoutes);
 
 // Health check
 app.get('/health', (req, res) => {
@@ -106,10 +109,12 @@ app.use((err, req, res, next) => {
 });
 
 // Start server
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
     console.log(`\n🚀 Server running on port ${PORT}`);
     console.log(`📍 API: http://localhost:${PORT}`);
     console.log(`🏥 Health: http://localhost:${PORT}/health\n`);
+    // Ensure DB tables exist
+    await initTimetableTable();
 });
 
 export default app;

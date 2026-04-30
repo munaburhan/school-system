@@ -1,0 +1,774 @@
+/* Timetable Page Styles */
+.timetable-page {
+    width: 100%;
+}
+
+.timetable-page .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.timetable-page .page-header h1 {
+    margin: 0;
+    color: var(--primary-color);
+    font-size: 1.875rem;
+    font-weight: 700;
+}
+
+/* View Toggle */
+.view-toggle {
+    display: flex;
+    background: white;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+}
+
+.view-toggle-btn {
+    padding: 0.6rem 1.25rem;
+    border: none;
+    background: transparent;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.25s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: 'Inter', sans-serif;
+}
+
+.view-toggle-btn:not(:last-child) {
+    border-right: 1px solid var(--border-color);
+}
+
+.view-toggle-btn.active {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    color: white;
+}
+
+.view-toggle-btn:hover:not(.active) {
+    background: #f1f5f9;
+}
+
+/* Filters Bar */
+.timetable-filters {
+    background: white;
+    padding: 1.25rem 1.5rem;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--border-color);
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.timetable-filters .filter-select {
+    padding: 0.65rem 2rem 0.65rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    font-size: 0.9rem;
+    background-color: var(--bg-color);
+    cursor: pointer;
+    transition: all 0.2s;
+    min-width: 140px;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    font-family: 'Inter', sans-serif;
+}
+
+.timetable-filters .filter-select:focus {
+    outline: none;
+    border-color: var(--primary-light);
+    background-color: white;
+}
+
+/* ============= TEACHER VIEW ============= */
+.teacher-timetable-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.teacher-timetable-card {
+    background: white;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-card);
+    overflow: hidden;
+    transition: box-shadow 0.25s ease;
+}
+
+.teacher-timetable-card:hover {
+    box-shadow: var(--shadow-md);
+}
+
+.teacher-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 1.5rem;
+    background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.teacher-card-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.teacher-card-avatar {
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-light));
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.1rem;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    flex-shrink: 0;
+}
+
+.teacher-card-name {
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--text-primary);
+}
+
+.teacher-card-arabic {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-top: 0.15rem;
+}
+
+.teacher-card-id {
+    font-size: 0.78rem;
+    color: var(--text-tertiary);
+    margin-top: 0.1rem;
+}
+
+.teacher-card-stats {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.teacher-stat {
+    text-align: center;
+    padding: 0.4rem 0.9rem;
+    background: white;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+}
+
+.teacher-stat-value {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--primary-color);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.teacher-stat-label {
+    font-size: 0.7rem;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-weight: 600;
+}
+
+/* Weekly Grid */
+.teacher-week-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 0;
+}
+
+.day-column {
+    border-right: 1px solid var(--border-color);
+    min-height: 100px;
+}
+
+.day-column:last-child {
+    border-right: none;
+}
+
+.day-column-header {
+    padding: 0.6rem 0.75rem;
+    text-align: center;
+    font-weight: 700;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-secondary);
+    background: #fafbfc;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.day-column-body {
+    padding: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    min-height: 80px;
+}
+
+.period-chip {
+    padding: 0.45rem 0.6rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.78rem;
+    position: relative;
+    transition: all 0.2s ease;
+    cursor: default;
+    border-left: 3px solid;
+}
+
+.period-chip:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+}
+
+.period-chip .chip-period-num {
+    font-weight: 700;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    opacity: 0.7;
+    display: block;
+    margin-bottom: 0.1rem;
+}
+
+.period-chip .chip-subject {
+    font-weight: 600;
+    display: block;
+    font-size: 0.82rem;
+}
+
+.period-chip .chip-grade {
+    font-size: 0.72rem;
+    opacity: 0.75;
+    display: block;
+    margin-top: 0.1rem;
+}
+
+.period-chip .chip-time {
+    font-size: 0.65rem;
+    opacity: 0.6;
+    display: block;
+}
+
+.period-chip .chip-room {
+    font-size: 0.65rem;
+    opacity: 0.6;
+}
+
+/* Subject color palette */
+.period-chip.subject-math { background: #eff6ff; border-color: #3b82f6; color: #1e40af; }
+.period-chip.subject-english { background: #fef3c7; border-color: #f59e0b; color: #92400e; }
+.period-chip.subject-science { background: #ecfdf5; border-color: #10b981; color: #065f46; }
+.period-chip.subject-arabic { background: #fce7f3; border-color: #ec4899; color: #9d174d; }
+.period-chip.subject-islamic { background: #f5f3ff; border-color: #8b5cf6; color: #5b21b6; }
+.period-chip.subject-social { background: #fff7ed; border-color: #f97316; color: #9a3412; }
+.period-chip.subject-pe { background: #fef2f2; border-color: #ef4444; color: #991b1b; }
+.period-chip.subject-art { background: #fdf4ff; border-color: #d946ef; color: #86198f; }
+.period-chip.subject-music { background: #f0fdfa; border-color: #14b8a6; color: #134e4a; }
+.period-chip.subject-computer { background: #f0f9ff; border-color: #0ea5e9; color: #075985; }
+.period-chip.subject-french { background: #eef2ff; border-color: #6366f1; color: #3730a3; }
+.period-chip.subject-physics { background: #f1f5f9; border-color: #64748b; color: #334155; }
+.period-chip.subject-chemistry { background: #fefce8; border-color: #eab308; color: #854d0e; }
+.period-chip.subject-biology { background: #f0fdf4; border-color: #22c55e; color: #166534; }
+.period-chip.subject-default { background: #f8fafc; border-color: #94a3b8; color: #475569; }
+
+.day-column-empty {
+    padding: 1.5rem 0.75rem;
+    text-align: center;
+    color: var(--text-tertiary);
+    font-size: 0.78rem;
+    font-style: italic;
+}
+
+/* ============= GRID VIEW ============= */
+.grid-view-container {
+    background: white;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-card);
+    overflow: auto;
+}
+
+.timetable-grid {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.timetable-grid thead th {
+    padding: 0.85rem 0.75rem;
+    text-align: center;
+    font-weight: 700;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+    background: #f8fafc;
+    border-bottom: 2px solid var(--border-color);
+    border-right: 1px solid var(--border-color);
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.timetable-grid thead th:last-child {
+    border-right: none;
+}
+
+.timetable-grid thead th:first-child {
+    width: 90px;
+    background: #f1f5f9;
+}
+
+.timetable-grid tbody td {
+    padding: 0.4rem;
+    border-bottom: 1px solid var(--border-color);
+    border-right: 1px solid var(--border-color);
+    vertical-align: top;
+    min-height: 70px;
+}
+
+.timetable-grid tbody td:last-child {
+    border-right: none;
+}
+
+.timetable-grid tbody td:first-child {
+    text-align: center;
+    font-weight: 700;
+    font-size: 0.82rem;
+    color: var(--primary-color);
+    background: #fafbfc;
+    vertical-align: middle;
+    padding: 0.5rem;
+}
+
+.period-label {
+    font-size: 0.72rem;
+    color: var(--text-tertiary);
+    display: block;
+    margin-top: 0.2rem;
+    font-weight: 500;
+}
+
+.grid-cell-chip {
+    padding: 0.4rem 0.5rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    border-left: 3px solid;
+    margin-bottom: 0.25rem;
+}
+
+.grid-cell-chip .cell-subject {
+    font-weight: 600;
+    display: block;
+}
+
+.grid-cell-chip .cell-teacher {
+    font-size: 0.7rem;
+    opacity: 0.75;
+    display: block;
+}
+
+.grid-cell-chip .cell-room {
+    font-size: 0.65rem;
+    opacity: 0.6;
+}
+
+.grid-cell-empty {
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-tertiary);
+    font-size: 0.75rem;
+}
+
+/* ============= ADD FORM ============= */
+.timetable-form-card {
+    background: white;
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+    border: 1px solid var(--border-color);
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.timetable-form-card h2 {
+    margin-bottom: 1.5rem;
+    color: var(--primary-color);
+    font-size: 1.25rem;
+}
+
+.form-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.form-grid-4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.timetable-form-card .form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.timetable-form-card .form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.85rem;
+}
+
+.timetable-form-card .form-group select,
+.timetable-form-card .form-group input {
+    width: 100%;
+    padding: 0.65rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    font-size: 0.9rem;
+    background-color: var(--bg-color);
+    transition: all 0.2s;
+    font-family: 'Inter', sans-serif;
+}
+
+.timetable-form-card .form-group select:focus,
+.timetable-form-card .form-group input:focus {
+    outline: none;
+    border-color: var(--primary-light);
+    background-color: white;
+    box-shadow: 0 0 0 3px rgba(44, 82, 130, 0.1);
+}
+
+.form-actions {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: flex-end;
+    margin-top: 0.5rem;
+}
+
+/* ============= EMPTY STATE ============= */
+.timetable-empty {
+    background: white;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-card);
+    padding: 4rem 2rem;
+    text-align: center;
+}
+
+.timetable-empty-icon {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+}
+
+.timetable-empty h3 {
+    font-size: 1.25rem;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.timetable-empty p {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+/* ============= LOADING ============= */
+.timetable-loading {
+    background: white;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-card);
+    padding: 3rem;
+    text-align: center;
+    color: var(--text-secondary);
+}
+
+/* ============= DELETE BUTTON ON CHIPS ============= */
+.period-chip-wrapper {
+    position: relative;
+}
+
+.period-chip-delete {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(239,68,68,0.15);
+    color: #ef4444;
+    cursor: pointer;
+    font-size: 0.6rem;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
+    font-weight: 700;
+    line-height: 1;
+    padding: 0;
+}
+
+.period-chip-wrapper:hover .period-chip-delete {
+    display: flex;
+}
+
+.period-chip-delete:hover {
+    background: #ef4444;
+    color: white;
+}
+
+/* ============= RESPONSIVE ============= */
+@media (max-width: 768px) {
+    .form-grid-3,
+    .form-grid-4 {
+        grid-template-columns: 1fr;
+    }
+
+    .teacher-week-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .teacher-card-stats {
+        display: none;
+    }
+
+    .timetable-filters {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
+
+/* ============= SUMMARY TABLE VIEW ============= */
+.summary-view-container {
+    background: white;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-card);
+    overflow: auto;
+}
+
+.summary-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.summary-table thead th {
+    padding: 0.9rem 1rem;
+    text-align: left;
+    font-weight: 700;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+    background: #f8fafc;
+    border-bottom: 2px solid var(--border-color);
+    white-space: nowrap;
+}
+
+.summary-th-teacher {
+    min-width: 180px;
+}
+
+.summary-teacher-row {
+    border-bottom: 1px solid transparent;
+    transition: background 0.15s;
+}
+
+.summary-teacher-row:hover {
+    background: #fafbff;
+}
+
+.summary-teacher-row td {
+    padding: 0.85rem 1rem;
+    vertical-align: middle;
+}
+
+.summary-teacher-name {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+}
+
+.summary-teacher-arabic {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    margin-top: 0.15rem;
+    direction: rtl;
+}
+
+.summary-staff-id {
+    font-family: monospace;
+    font-size: 0.85rem;
+    background: #f1f5f9;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.summary-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+}
+
+.summary-tag {
+    padding: 0.2rem 0.55rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-left: none;
+}
+
+/* Reuse subject chip background/color pairs for summary tags */
+.summary-tag.subject-math    { background: #eff6ff; color: #1e40af; }
+.summary-tag.subject-english { background: #fef3c7; color: #92400e; }
+.summary-tag.subject-science { background: #ecfdf5; color: #065f46; }
+.summary-tag.subject-arabic  { background: #fce7f3; color: #9d174d; }
+.summary-tag.subject-islamic { background: #f5f3ff; color: #5b21b6; }
+.summary-tag.subject-social  { background: #fff7ed; color: #9a3412; }
+.summary-tag.subject-pe      { background: #fef2f2; color: #991b1b; }
+.summary-tag.subject-art     { background: #fdf4ff; color: #86198f; }
+.summary-tag.subject-music   { background: #f0fdfa; color: #134e4a; }
+.summary-tag.subject-computer{ background: #f0f9ff; color: #075985; }
+.summary-tag.subject-french  { background: #eef2ff; color: #3730a3; }
+.summary-tag.subject-physics { background: #f1f5f9; color: #334155; }
+.summary-tag.subject-chemistry{background: #fefce8; color: #854d0e; }
+.summary-tag.subject-biology { background: #f0fdf4; color: #166534; }
+.summary-tag.subject-default { background: #f1f5f9; color: #475569; }
+
+.summary-tag-grade {
+    background: linear-gradient(135deg, #eff6ff, #e0e7ff);
+    color: #3730a3;
+    font-weight: 700;
+}
+
+.summary-days {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.summary-day-dot {
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    background: #f1f5f9;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+
+.summary-day-dot.active {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    color: white;
+}
+
+.summary-total {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-light));
+    color: white;
+    font-weight: 700;
+    font-size: 0.9rem;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+/* Detail row (per-day breakdown) */
+.summary-detail-row td {
+    padding: 0 1rem 1rem 1rem;
+    background: #fafbfc;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.summary-day-breakdown {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding-top: 0.5rem;
+}
+
+.summary-day-group {
+    min-width: 140px;
+}
+
+.summary-day-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-secondary);
+    margin-bottom: 0.4rem;
+}
+
+.summary-day-entries {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.summary-entry-chip {
+    padding: 0.3rem 0.6rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.76rem;
+    border-left: 3px solid;
+}
+
+.summary-entry-chip.subject-math    { background: #eff6ff; border-color: #3b82f6; color: #1e40af; }
+.summary-entry-chip.subject-english { background: #fef3c7; border-color: #f59e0b; color: #92400e; }
+.summary-entry-chip.subject-science { background: #ecfdf5; border-color: #10b981; color: #065f46; }
+.summary-entry-chip.subject-arabic  { background: #fce7f3; border-color: #ec4899; color: #9d174d; }
+.summary-entry-chip.subject-islamic { background: #f5f3ff; border-color: #8b5cf6; color: #5b21b6; }
+.summary-entry-chip.subject-social  { background: #fff7ed; border-color: #f97316; color: #9a3412; }
+.summary-entry-chip.subject-pe      { background: #fef2f2; border-color: #ef4444; color: #991b1b; }
+.summary-entry-chip.subject-art     { background: #fdf4ff; border-color: #d946ef; color: #86198f; }
+.summary-entry-chip.subject-music   { background: #f0fdfa; border-color: #14b8a6; color: #134e4a; }
+.summary-entry-chip.subject-computer{ background: #f0f9ff; border-color: #0ea5e9; color: #075985; }
+.summary-entry-chip.subject-french  { background: #eef2ff; border-color: #6366f1; color: #3730a3; }
+.summary-entry-chip.subject-physics { background: #f1f5f9; border-color: #64748b; color: #334155; }
+.summary-entry-chip.subject-chemistry{background: #fefce8; border-color: #eab308; color: #854d0e; }
+.summary-entry-chip.subject-biology { background: #f0fdf4; border-color: #22c55e; color: #166534; }
+.summary-entry-chip.subject-default { background: #f8fafc; border-color: #94a3b8; color: #475569; }

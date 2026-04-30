@@ -10,6 +10,7 @@ import Staff from './pages/Staff';
 import TeacherAssignments from './pages/TeacherAssignments';
 import DataEntry from './pages/DataEntry';
 import Permissions from './pages/Permissions';
+import Timetable from './pages/Timetable';
 import './index.css';
 
 function App() {
@@ -58,10 +59,7 @@ function App() {
             <Route path="/timetable" element={
               <ProtectedRoute>
                 <Layout>
-                  <div className="card">
-                    <h1>Timetable</h1>
-                    <p>Timetable page coming soon...</p>
-                  </div>
+                  <Timetable />
                 </Layout>
               </ProtectedRoute>
             } />
