@@ -9,9 +9,9 @@ import { authMiddleware, requireRole } from '../middleware/auth.js';
 
 const router = express.Router();
 
-// All routes require authentication and admin role
+// All routes require authentication and an elevated role
 router.use(authMiddleware);
-router.use(requireRole('admin'));
+router.use(requireRole('admin', 'principal', 'vice_principal'));
 
 // Import routes
 router.post('/students', uploadMiddleware, importStudents);

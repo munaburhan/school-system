@@ -181,6 +181,17 @@ export const importStudents = async (req, res) => {
     }
 };
 
+// Helper to map staff_category to permission role
+const categoryToRole = (category) => {
+    if (!category) return 'teacher';
+    const cat = category.toLowerCase();
+    if (cat === 'teacher') return 'teacher';
+    if (cat === 'principal') return 'principal';
+    if (cat === 'vice principal') return 'vice_principal';
+    if (cat === 'hod' || cat === 'hos') return 'leader';
+    return 'admin';
+};
+
 export const importStaff = async (req, res) => {
     try {
         if (!req.file) {
@@ -212,49 +223,56 @@ export const importStaff = async (req, res) => {
                 await client.query('BEGIN');
 
                 const staffData = {
-                    username: row.username || row['Username'],
-                    password: row.password || row['Password'] || 'default123',
-                    email: row.email || row['Email'],
-                    english_name: row.english_name || row['English Name'] || row['Name'],
-                    arabic_name: row.arabic_name || row['Arabic Name'] || '',
-                    role: row.role || row['Role'] || 'teacher',
-                    department: row.department || row['Department']
+                    staff_id: String(row.staff_id || row['Staff ID'] || '').trim(),
+                    english_name: String(row.english_name || row['English Name'] || row['Name'] || '').trim(),
+                    arabic_name: String(row.arabic_name || row['Arabic Name'] || '').trim(),
+                    staff_category: String(row.staff_category || row['Staff Category'] || row['Category'] || 'Teacher').trim(),
+                    joining_date: parseDate(row.joining_date || row['Joining Date']),
+                    email: String(row.email || row['Email'] || '').trim() || null
                 };
 
-                if (!staffData.username || !staffData.english_name) {
+                if (!staffData.staff_id || !staffData.english_name) {
                     results.failed++;
                     results.errors.push({
                         row: i + 2,
-                        error: 'Missing required fields (username or english_name)',
+                        error: 'Missing required fields (staff_id or english_name)',
                         data: row
                     });
                     await client.query('ROLLBACK');
                     continue;
                 }
 
-                // Hash password
+                // Auto-generate username and default password (same as staffController)
+                const username = `staff_${staffData.staff_id}`;
+                const defaultPassword = 'staff123';
                 const bcrypt = await import('bcryptjs');
-                const password_hash = await bcrypt.default.hash(staffData.password, 10);
+                const password_hash = await bcrypt.default.hash(defaultPassword, 10);
+                const role = categoryToRole(staffData.staff_category);
 
-                // Create user account
+                // Upsert user account
                 const userResult = await client.query(
                     `INSERT INTO users (username, password_hash, role, email)
            VALUES ($1, $2, $3, $4)
            ON CONFLICT (username) DO UPDATE
-           SET role = $3, email = $4
+           SET role = EXCLUDED.role, email = EXCLUDED.email
            RETURNING id`,
-                    [staffData.username, password_hash, staffData.role, staffData.email]
+                    [username, password_hash, role, staffData.email]
                 );
 
                 const userId = userResult.rows[0].id;
 
-                // Create or update staff record
+                // Upsert staff record using current schema
                 await client.query(
-                    `INSERT INTO staff (user_id, english_name, arabic_name, role, department)
-           VALUES ($1, $2, $3, $4, $5)
-           ON CONFLICT (user_id) DO UPDATE
-           SET english_name = $2, arabic_name = $3, role = $4, department = $5`,
-                    [userId, staffData.english_name, staffData.arabic_name, staffData.role, staffData.department]
+                    `INSERT INTO staff (user_id, staff_id, english_name, arabic_name, role, staff_category, joining_date)
+           VALUES ($1, $2, $3, $4, $5, $6, $7)
+           ON CONFLICT (staff_id) DO UPDATE
+           SET english_name = EXCLUDED.english_name,
+               arabic_name  = EXCLUDED.arabic_name,
+               role         = EXCLUDED.role,
+               staff_category = EXCLUDED.staff_category,
+               joining_date = EXCLUDED.joining_date,
+               updated_at   = CURRENT_TIMESTAMP`,
+                    [userId, staffData.staff_id, staffData.english_name, staffData.arabic_name, role, staffData.staff_category, staffData.joining_date]
                 );
 
                 await client.query('COMMIT');
@@ -315,22 +333,20 @@ export const downloadTemplate = (req, res) => {
     } else if (type === 'staff') {
         template = [
             {
-                username: 'teacher1',
-                password: 'default123',
-                email: 'teacher1@school.com',
+                staff_id: 'T001',
                 english_name: 'Ahmed Ali',
                 arabic_name: 'أحمد علي',
-                role: 'teacher',
-                department: 'Mathematics'
+                staff_category: 'Teacher',
+                joining_date: '2023-09-01',
+                email: 'ahmed.ali@school.com'
             },
             {
-                username: 'principal1',
-                password: 'default123',
-                email: 'principal@school.com',
+                staff_id: 'P001',
                 english_name: 'Fatima Hassan',
                 arabic_name: 'فاطمة حسن',
-                role: 'principal',
-                department: 'Administration'
+                staff_category: 'Principal',
+                joining_date: '2020-01-15',
+                email: 'principal@school.com'
             }
         ];
     } else {

@@ -64,8 +64,8 @@ const DataEntry = () => {
     ];
 
     const staffColumns = [
-        'username (Required)', 'password', 'email', 'english_name (Required)',
-        'arabic_name', 'role', 'department'
+        'staff_id (Required)', 'english_name (Required)', 'arabic_name',
+        'staff_category', 'joining_date (YYYY-MM-DD)', 'email'
     ];
 
     return (
